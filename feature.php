@@ -6,34 +6,6 @@ include("config.php");
 if(!isset($_SESSION['uemail']))
 {
 	header("location:login.php");
-}
-
-////// code
-$error='';
-$msg='';
-if(isset($_POST['insert']))
-{
-	$name=$_POST['name'];
-	$phone=$_POST['phone'];
-
-	$content=$_POST['content'];
-	
-	$uid=$_SESSION['uid'];
-	
-	if(!empty($name) && !empty($phone) && !empty($content))
-	{
-		
-		$sql="INSERT INTO feedback (uid,fdescription,status) VALUES ('$uid','$content','0')";
-		   $result=mysqli_query($con, $sql);
-		   if($result){
-			   $msg = "<p class='alert alert-success'>Feedback Send Successfully</p> ";
-		   }
-		   else{
-			   $error = "<p class='alert alert-warning'>Feedback Not Send Successfully</p> ";
-		   }
-	}else{
-		$error = "<p class='alert alert-warning'>Please Fill all the fields</p>";
-	}
 }								
 ?>
 <!DOCTYPE html>
@@ -96,13 +68,13 @@ if(isset($_POST['insert']))
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <h2 class="page-name float-left text-white text-uppercase mt-1 mb-0"><b>Profile</b></h2>
+                        <h2 class="page-name float-left text-white text-uppercase mt-1 mb-0"><b>User Listed Property</b></h2>
                     </div>
                     <div class="col-md-6">
                         <nav aria-label="breadcrumb" class="float-left float-md-right">
                             <ol class="breadcrumb bg-transparent m-0 p-0">
                                 <li class="breadcrumb-item text-white"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Profile</li>
+                                <li class="breadcrumb-item active">User Listed Property</li>
                             </ol>
                         </nav>
                     </div>
@@ -113,61 +85,59 @@ if(isset($_POST['insert']))
 		 
 		 
 		<!--	Submit property   -->
-        <div class="full-row">
+        <div class="full-row bg-gray">
             <div class="container">
-                    <div class="row">
+                    <div class="row mb-5">
 						<div class="col-lg-12">
-							<h2 class="text-secondary double-down-line text-center">Profile</h2>
+							<h2 class="text-secondary double-down-line text-center">User Listed Property</h2>
+							<?php 
+								if(isset($_GET['msg']))	
+								echo $_GET['msg'];	
+							?>
                         </div>
 					</div>
-                <div class="dashboard-personal-info p-5 bg-white">
-                    <form action="#" method="post">
-                        <h5 class="text-secondary border-bottom-on-white pb-3 mb-4">Feedback Form</h5>
-						<?php echo $msg; ?><?php echo $error; ?>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="user-id">Full Name</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Enter Full Name">
-                                </div>                
-                                
-                                <div class="form-group">
-                                    <label for="phone">Contact Number</label>
-                                    <input type="number" name="phone"  class="form-control" placeholder="Enter Phone" maxlength="10">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="about-me">Your Feedback</label>
-                                    <textarea class="form-control" name="content" rows="7" placeholder="Enter Text Here...."></textarea>
-                                </div>
-                                <input type="submit" class="btn btn-info mb-4" name="insert" value="Send Feedback">
-                            </div>
-							</form>
-                            <div class="col-lg-1"></div>
-                            <div class="col-lg-5 col-md-12">
-								<?php 
-									$uid=$_SESSION['uid'];
-									$query=mysqli_query($con,"SELECT * FROM `user` WHERE uid='$uid'");
-									while($row=mysqli_fetch_array($query))
-									{
-								?>
-                                <div class="user-info mt-md-50"> <img src="admin/user/<?php echo $row['6'];?>" alt="userimage">
-                                    <div class="mb-4 mt-3">
-                                        
+					<table class="items-list col-lg-12 table-hover" style="border-collapse:inherit;">
+                        <thead>
+                             <tr  class="bg-dark">
+                                <th class="text-white font-weight-bolder">Properties</th>
+                                <th class="text-white font-weight-bolder">BHK</th>
+                                <th class="text-white font-weight-bolder">Type</th>
+                                <th class="text-white font-weight-bolder">Added Date</th>
+								<th class="text-white font-weight-bolder">Status</th>
+                                <th class="text-white font-weight-bolder">Update</th>
+								<th class="text-white font-weight-bolder">Delete</th>
+                             </tr>
+                        </thead>
+                        <tbody>
+						
+							<?php 
+							$uid=$_SESSION['uid'];
+							$query=mysqli_query($con,"SELECT * FROM `property` WHERE uid='$uid'");
+								while($row=mysqli_fetch_array($query))
+								{
+							?>
+                            <tr>
+                                <td>
+									<img src="admin/property/<?php echo $row['18'];?>" alt="pimage">
+                                    <div class="property-info d-table">
+                                        <h5 class="text-secondary text-capitalize"><a href="propertydetail.php?pid=<?php echo $row['0'];?>"><?php echo $row['1'];?></a></h5>
+                                        <span class="font-14 text-capitalize"><i class="fas fa-map-marker-alt text-success font-13"></i>&nbsp; <?php echo $row['14'];?></span>
+                                        <div class="price mt-3">
+											<span class="text-success">$&nbsp;<?php echo $row['13'];?></span>
+										</div>
                                     </div>
-									
-                                    <div class="font-18">
-                                        <div class="mb-1 text-capitalize"><b>Name:</b> <?php echo $row['1'];?></div>
-                                        <div class="mb-1"><b>Email:</b> <?php echo $row['2'];?></div>
-                                        <div class="mb-1"><b>Contact:</b> <?php echo $row['3'];?></div>
-										<div class="mb-1 text-capitalize"><b>Role:</b> <?php echo $row['5'];?></div>
-                                    </div>
-									<?php } ?>
-                                </div>
-                            </div>
-                        </div>
-                    
-                </div>            
+								</td>
+                                <td><?php echo $row['4'];?></td>
+                                <td class="text-capitalize">For <?php echo $row['5'];?></td>
+                                <td><?php echo $row['29'];?></td>
+								<td class="text-capitalize"><?php echo $row['24'];?></td>
+                                <td><a class="btn btn-info" href="submitpropertyupdate.php?id=<?php echo $row['0'];?>">Update</a></td>
+								<td><a class="btn btn-danger" href="submitpropertydelete.php?id=<?php echo $row['0'];?>">Delete</a></td>
+                            </tr>
+							<?php } ?>
+							
+                        </tbody>
+                    </table>            
             </div>
         </div>
 	<!--	Submit property   -->
@@ -183,6 +153,7 @@ if(isset($_POST['insert']))
     </div>
 </div>
 <!-- Wrapper End --> 
+
 <!--	Js Link
 ============================================================--> 
 <script src="js/jquery.min.js"></script> 
